@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import finnHub from "../apis/finnHub";
 import { StockChart } from "../components/StockChart";
 import { StockData } from "../components/StockData";
+import { WatchListContext } from "../context/watchListContext";
 
 const formatData = (data) => {
   return data.t.map((el, index) => {
@@ -16,6 +17,7 @@ const formatData = (data) => {
 export const StockDetailPage = () => {
   const [chartData, setChartData] = useState();
   const { symbol } = useParams();
+  const { setLoading, loading } = useContext(WatchListContext);
   useEffect(() => {
     const fetchData = async () => {
       const date = new Date();
@@ -32,6 +34,7 @@ export const StockDetailPage = () => {
       const oneYear = currentTime - 365 * 24 * 60 * 60;
 
       try {
+        setLoading(true);
         const responses = await Promise.all([
           finnHub.get("/stock/candle", {
             params: {
@@ -65,6 +68,7 @@ export const StockDetailPage = () => {
           week: formatData(responses[1].data),
           year: formatData(responses[2].data),
         });
+        setLoading(false);
       } catch (err) {
         console.log(err);
       }
@@ -73,10 +77,18 @@ export const StockDetailPage = () => {
   }, [symbol]);
   return (
     <div>
-      {chartData && (
+      {loading ? (
+        <div className="loader"></div>
+      ) : (
         <div>
-          <StockChart chartData={chartData} symbol={symbol} />
-          <StockData symbol={symbol} />
+          {chartData && (
+            <div>
+              <StockData symbol={symbol} />
+              <StockChart chartData={chartData} symbol={symbol} />
+              {/* previous page button right corner */}
+              <button className="btn btn-primary mt-5 back" onClick={() => window.history.back()}>Go Back</button>
+            </div>
+          )}
         </div>
       )}
     </div>

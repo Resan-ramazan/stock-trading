@@ -8,6 +8,9 @@ export const WatchListContextProvider = (props) => {
     ["GOOGL", "MSFT", "AMZN"]
   )
 
+  const [loading, setLoading] = useState(false)
+
+  
   // useEffect(() => {
   //   localStorage.setItem("watchList", watchList)
   // }, [watchList])
@@ -27,7 +30,7 @@ export const WatchListContextProvider = (props) => {
   };
 
   return (
-    <WatchListContext.Provider value={{watchList, addStock, deleteStock}}>
+    <WatchListContext.Provider value={{watchList, addStock, deleteStock,loading,setLoading}}>
       {props.children}
     </WatchListContext.Provider>
   );

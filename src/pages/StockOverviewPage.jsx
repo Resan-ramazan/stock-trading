@@ -5,7 +5,6 @@ export const StockOverviewPage = () => {
   return (
     <div>
       <img className="logo" src={logo2} alt="logo" />
-      
       <AutoComplete />
       <StockList />
     </div>

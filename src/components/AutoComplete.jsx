@@ -6,7 +6,7 @@ export const AutoComplete = () => {
   const [search, setSearch] = useState("");
   const [results, setResults] = useState([]);
 
-  const {addStock} = useContext(WatchListContext);
+  const {addStock,setLoading,loading} = useContext(WatchListContext);
 
   const renderDropdown = () => {
     const dropDownClass = search ? "show" : null;
@@ -38,6 +38,7 @@ export const AutoComplete = () => {
     let isMounted = true;
     const fetchData = async () => {
       try {
+        setLoading(true);
         const response = await finnHub.get("/search", {
           params: {
             q: search,
@@ -45,6 +46,7 @@ export const AutoComplete = () => {
         });
         if (isMounted) {
           setResults(response.data.result);
+          setLoading(false);
         }
       } catch (error) {}
     };
@@ -63,6 +65,7 @@ export const AutoComplete = () => {
 
   return (
     <div className="w-50 p-5 rounded mx-auto ">
+   
       <div className="form-floating dropdown">
         <input
           style={{ backgroundColor: "rgba(145,158,171,0.04" }}
@@ -75,11 +78,6 @@ export const AutoComplete = () => {
           onChange={handleChange}
         ></input>
         <label for="search">Search</label>
-        {/* <ul className="dropdown-menu show">
-          <li>Search 1</li>
-          <li>Search 2</li>
-          <li>Search 3</li>
-        </ul> */}
         {renderDropdown()}
       </div>
     </div>
